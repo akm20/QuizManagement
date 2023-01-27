@@ -11,7 +11,7 @@ public class Questions {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long question_id;
+    private Long questionId;
     private Long subjectId; // mapping required 1:N (one subject many question)
     private String description;
     private String option1;
