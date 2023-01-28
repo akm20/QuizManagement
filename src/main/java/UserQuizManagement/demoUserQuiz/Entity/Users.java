@@ -8,16 +8,20 @@ import java.util.Date;
 
 @Entity
 @Table
-//        (name = "users", uniqueConstraints = @UniqueConstraint(columnNames = "user_email"))
+//        (name = "users", uniqueConstraints = @UniqueConstraint(columnNames = "userEmail"))
 public class Users {
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.AUTO)
     @Id
-    private Long user_id;
-    private String user_name;
-    private String user_phone_no;
+    @Column(name = "user_id")
+    private Long userId;
+    @Column(name = "user_name")
+    private String userName ;
+    @Column(name = "user_phone_no")
+    private String userPhoneNo;
     @Column(name="user_email")
     private String userEmail;
-    private String user_password;
+    @Column(name="user_password")
+    private String userPassword;
     @JsonFormat(pattern = "dd/mm/yyyy")
     private Date dob;
 
@@ -29,39 +33,39 @@ public class Users {
 
     }
 
-    public Users(Long user_id, String user_name, String user_phone_no, String userEmail,
-                 String user_password, Date dob,Roles roles) {
-        this.user_id = user_id;
-        this.user_name = user_name;
-        this.user_phone_no = user_phone_no;
+    public Users(Long userId, String userName, String userPhoneNo, String userEmail,
+                 String userPassword, Date dob,Roles roles) {
+        this.userId = userId;
+        this.userName = userName;
+        this.userPhoneNo = userPhoneNo;
         this.userEmail = userEmail;
-        this.user_password = user_password;
+        this.userPassword = userPassword;
         this.dob = dob;
         this.roles=roles;
     }
 
-    public Long getUser_id() {
-        return user_id;
+    public Long getUserId() {
+        return userId;
     }
 
-    public void setUser_id(Long user_id) {
-        this.user_id = user_id;
+    public void setUserId(Long userId) {
+        this.userId = userId;
     }
 
-    public String getUser_name() {
-        return user_name;
+    public String getUserName() {
+        return userName;
     }
 
-    public void setUser_name(String user_name) {
-        this.user_name = user_name;
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 
-    public String getUser_phone_no() {
-        return user_phone_no;
+    public String getUserPhoneNo() {
+        return userPhoneNo;
     }
 
-    public void setUser_phone_no(String user_phone_no) {
-        this.user_phone_no = user_phone_no;
+    public void setUserPhoneNo (String userPhoneNo) {
+        this.userPhoneNo = userPhoneNo;
     }
 
     public String getUserEmail() {
@@ -72,12 +76,12 @@ public class Users {
         this.userEmail = userEmail;
     }
 
-    public String getUser_password() {
-        return user_password;
+    public String getUserPassword() {
+        return userPassword;
     }
 
-    public void setUser_password(String user_password) {
-        this.user_password = user_password;
+    public void setUserPassword(String userPassword) {
+        this.userPassword = userPassword;
     }
 
     public Date getDob() {
@@ -99,11 +103,11 @@ public class Users {
     @Override
     public String toString() {
         return "Users{" +
-                "user_id=" + user_id +
-                ", user_name='" + user_name + '\'' +
-                ", user_phone_no='" + user_phone_no + '\'' +
+                "userId=" + userId +
+                ", userName='" + userName + '\'' +
+                ", userPhoneNo='" + userPhoneNo + '\'' +
                 ", userEmail='" + userEmail + '\'' +
-                ", user_password='" + user_password + '\'' +
+                ", userPassword='" + userPassword + '\'' +
                 ", dob='" + dob + '\'' +
                 '}';
     }

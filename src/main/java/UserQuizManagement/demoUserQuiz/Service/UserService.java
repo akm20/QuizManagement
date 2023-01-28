@@ -3,15 +3,23 @@ package UserQuizManagement.demoUserQuiz.Service;
 import UserQuizManagement.demoUserQuiz.CustomException;
 import UserQuizManagement.demoUserQuiz.Entity.Users;
 import UserQuizManagement.demoUserQuiz.Repository.UserRepository;
+import ch.qos.logback.core.util.COWArrayList;
+import org.apache.tomcat.util.buf.CharChunk;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import org.springframework.boot.autoconfigure.security.servlet.UserDetailsServiceAutoConfiguration;
 import org.springframework.stereotype.Service;
 
-import javax.swing.text.html.Option;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.function.Predicate;
+import javax.crypto.*;
+import javax.crypto.spec.IvParameterSpec;
+import javax.crypto.spec.SecretKeySpec;
+import java.math.BigDecimal;
+import java.security.InvalidAlgorithmParameterException;
+import java.security.InvalidKeyException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.*;
+
 
 @Service
 public class UserService
@@ -22,36 +30,45 @@ public class UserService
     public List<Users> getUsers(){
         return userRepository.findAll();
     }
-    public Users getUserById(Long user_id){
-        Optional<Users> userOptional = userRepository.findById(user_id);
+    public Users getUserById(Long userId){
+        Optional<Users> userOptional = userRepository.findById(userId);
         if(!userOptional.isPresent()){
 
         }
         return userOptional.get();
     }
-
-
-    public Users createNewUser(Users user) throws CustomException {
+    
+    public Users createNewUser(Users user) throws Exception {
         boolean optional= userRepository.existsByUserEmail(user.getUserEmail());
         if(optional){
             throw new CustomException("Email ID already exists !");
         }
         return userRepository.save(user);
     }
-
+//    public Users loginUser(Users user) throws Exception {
+//
+//        Optional<Users> usersOptional = userRepository.findByUserEmail(user.getUserEmail());
+//        Integer secretKey= 123455;
+//        String password = usersOptional.get().getUserPassword();
+//        String plainText = decrypt(password,secretKey);
+//        if(!plainText.equals(user.getUserPassword())){
+//            throw new CustomException("User not Found");
+//        }
+//        return user;
+//    }
 
     public Users updateUser(Users user) throws CustomException{
-        Optional<Users> userOptional = userRepository.findById(user.getUser_id());
+        Optional<Users> userOptional = userRepository.findById(user.getUserId());
         if(!userOptional.isPresent()){
             //throw new CustomException();
             throw new CustomException("No such id exists");
         }
 //        Optional<User1> user1Optional = userRepository.findById(user1.getId());
-        if(user.getUser_name() != null) {
-            userOptional.get().setUser_name(user.getUser_name());
+        if(user.getUserName() != null) {
+            userOptional.get().setUserName(user.getUserName());
         }
-        if(user.getUser_phone_no() != null) {
-            userOptional.get().setUser_phone_no(user.getUser_phone_no());
+        if(user.getUserPhoneNo() != null) {
+            userOptional.get().setUserPhoneNo(user.getUserPhoneNo());
         }
         if(user.getUserEmail() != null) {
             userOptional.get().setUserEmail(user.getUserEmail());

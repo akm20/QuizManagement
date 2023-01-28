@@ -20,25 +20,32 @@ public class UserController {
         return userService.getUsers();
     }
 
-    @GetMapping("/users/{user_id}")
-    public Users getUserById(@PathVariable(value = "user_id") Long user_id ){
+    @GetMapping("/users/{userId}")
+    public Users getUserById(@PathVariable(value = "userId") Long user_id ){
         return userService.getUserById(user_id);
     }
 
+//    @PostMapping("/users/login")
+//    public ResponseEntity<Users> loginUser(@RequestBody Users user) throws Exception {
+//        Users loginUser = userService.loginUser(user);
+//        return  ResponseEntity.ok(loginUser);
+////
+//    }
+
     @PostMapping("/users")
-    public Users createUser(@RequestBody Users user) throws CustomException {
+    public Users createUser(@RequestBody Users user) throws Exception {
         return userService.createNewUser(user);
     }
 
-    @PutMapping("/users/{user_id}")
+    @PutMapping("/users/{userId}")
     public ResponseEntity<Users> updateUser(@RequestBody Users user ) throws CustomException {
         Users updatedUser = userService.updateUser(user);
         return ResponseEntity.ok(updatedUser);
     }
 
-    @DeleteMapping("users/{user_id}")
-    public Map<String,Boolean> deleteUsers(@PathVariable(value = "user_id") Long user_id) throws CustomException {
-        return userService.deleteUser(user_id);
+    @DeleteMapping("users/{userId}")
+    public Map<String,Boolean> deleteUsers(@PathVariable(value = "userId") Long userId) throws CustomException {
+        return userService.deleteUser(userId);
     }
 
 }
