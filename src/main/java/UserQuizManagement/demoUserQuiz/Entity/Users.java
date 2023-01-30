@@ -2,15 +2,14 @@ package UserQuizManagement.demoUserQuiz.Entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
-
 import javax.persistence.*;
-import java.util.*;
+import java.time.LocalDate;
+import java.util.Date;
 
 @Entity
 @Table
 //        (name = "users", uniqueConstraints = @UniqueConstraint(columnNames = "userEmail"))
-//
-public class Users{
+public class Users {
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Id
     @Column(name = "user_id")
@@ -23,13 +22,16 @@ public class Users{
     private String userEmail;
     @Column(name="user_password")
     private String userPassword;
-    @JsonFormat(pattern = "dd/mm/yyyy")
+    @JsonFormat(pattern = "yyyy-mm-dd")
     private Date dob;
-    private Roles roles;
-//    @ManyToMany(cascade = CascadeType.ALL, fetch=FetchType.EAGER)
-//    @JoinTable(name = "user_role",joinColumns = @JoinColumn(name = "user", referencedColumnName = "id"),
-//            inverseJoinColumns = @JoinColumn(name = "role", referencedColumnName = "id"))
-//    private Set<Roles> roles=new HashSet<>();
+    @Column(name = "security_question")
+    private String question;
+    @Column(name = "security_answer")
+    private String answer;
+
+    private  Roles roles;
+
+
     // dob
 //    @OneToMany
 //    private Marks mark;
@@ -38,7 +40,7 @@ public class Users{
     }
 
     public Users(Long userId, String userName, String userPhoneNo, String userEmail,
-                 String userPassword, Date dob, Roles roles) {
+                 String userPassword, Date dob, Roles roles, String question, String answer) {
         this.userId = userId;
         this.userName = userName;
         this.userPhoneNo = userPhoneNo;
@@ -46,6 +48,8 @@ public class Users{
         this.userPassword = userPassword;
         this.dob = dob;
         this.roles=roles;
+        this.question = question;
+        this.answer = answer;
     }
 
     public Long getUserId() {
@@ -104,6 +108,22 @@ public class Users{
         this.roles = roles;
     }
 
+    public String getQuestion() {
+        return question;
+    }
+
+    public void setQuestion(String question) {
+        this.question = question;
+    }
+
+    public String getAnswer() {
+        return answer;
+    }
+
+    public void setAnswer(String answer) {
+        this.answer = answer;
+    }
+
     @Override
     public String toString() {
         return "Users{" +
@@ -115,7 +135,5 @@ public class Users{
                 ", dob='" + dob + '\'' +
                 '}';
     }
-
-
 }
 

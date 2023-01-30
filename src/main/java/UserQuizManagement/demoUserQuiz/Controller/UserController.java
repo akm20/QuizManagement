@@ -37,6 +37,11 @@ public class UserController {
         return  ResponseEntity.ok(adminUser);
     }
 
+    @PutMapping("/users/forgotpassword")
+    public Users forgotPwd(@RequestBody Users users) throws CustomException {
+        return  userService.forgotPassword(users);
+    }
+
 
     @PostMapping("/users")
     public Users createUser(@RequestBody Users user) throws Exception {

@@ -94,6 +94,24 @@ public class UserService
     }
 
 
+    public Users forgotPassword(Users users) throws CustomException {
+        Optional<Users> usersOptional = userRepository.findByUserEmail(users.getUserEmail());
+        String question = usersOptional.get().getQuestion();
+        String answer = usersOptional.get().getAnswer();
+        if (!answer.equals(users.getAnswer())
+                || !usersOptional.get().getUserEmail().equals(users.getUserEmail())) {
+            throw new CustomException("The security answer or email or security question does not matches");
+        }
+        usersOptional.get().setUserPassword(encodeToBase64(users.getUserPassword()));
+
+        Users users1= userRepository.save(usersOptional.get());
+        return users1;
+    }
+
+
+
+
+
     public Users updateUser(Users user) throws CustomException{
         Optional<Users> userOptional = userRepository.findById(user.getUserId());
         if(!userOptional.isPresent()){
@@ -112,6 +130,12 @@ public class UserService
         }
         if (user.getDob()!=null){
             userOptional.get().setDob(user.getDob());
+        }
+        if (user.getQuestion()!=null){
+            userOptional.get().setQuestion(user.getQuestion());
+        }
+        if (user.getAnswer()!=null){
+            userOptional.get().setAnswer(user.getAnswer());
         }
         Users user1 = userRepository.save(userOptional.get());
         return user1;
