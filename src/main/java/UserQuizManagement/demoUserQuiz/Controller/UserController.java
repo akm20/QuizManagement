@@ -5,7 +5,6 @@ import UserQuizManagement.demoUserQuiz.Entity.Users;
 import UserQuizManagement.demoUserQuiz.Service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -15,8 +14,6 @@ import java.util.Map;
 public class UserController {
     @Autowired
     private UserService userService;
-    @Autowired
-    private BCryptPasswordEncoder passwordEncoder;
 
     @GetMapping("/users")
     public List<Users> getAllUser(){
@@ -28,22 +25,31 @@ public class UserController {
         return userService.getUserById(user_id);
     }
 
-//    @PostMapping("/users/login")
-//    public ResponseEntity<Users> loginUser(@RequestBody Users user) throws Exception {
-//        Users loginUser = userService.loginUser(user);
-//        return  ResponseEntity.ok(loginUser);
-////
-//    }
+    @PostMapping("/users/login")
+    public ResponseEntity<Users> loginUser(@RequestBody Users user) throws Exception {
+        Users loginUser = userService.loginUser(user);
+        return  ResponseEntity.ok(loginUser);
+    }
+
+    @PostMapping("/admin/login")
+    public ResponseEntity<Users> adminUser(@RequestBody Users user) throws Exception {
+        Users adminUser = userService.adminUser(user);
+        return  ResponseEntity.ok(adminUser);
+    }
+
 
     @PostMapping("/users")
     public Users createUser(@RequestBody Users user) throws Exception {
         return userService.createNewUser(user);
     }
+    @PostMapping("/admin")
+    public Users createAdmin(@RequestBody Users user) throws Exception {
+        return userService.createNewAdmin(user);
+    }
 
     @PutMapping("/users/{userId}")
-
     public ResponseEntity<Users> updateUser(@RequestBody Users user ) throws CustomException {
-        Users updatedUser = userService.updateUser(user, user.getUserId());
+        Users updatedUser = userService.updateUser(user);
         return ResponseEntity.ok(updatedUser);
     }
 

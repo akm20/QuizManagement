@@ -1,20 +1,30 @@
 package UserQuizManagement.demoUserQuiz.Service;
 
 import UserQuizManagement.demoUserQuiz.CustomException;
+import UserQuizManagement.demoUserQuiz.Entity.Roles;
 import UserQuizManagement.demoUserQuiz.Entity.Users;
 import UserQuizManagement.demoUserQuiz.Repository.UserRepository;
+import ch.qos.logback.core.util.COWArrayList;
+import org.apache.tomcat.util.buf.CharChunk;
+import org.apache.tomcat.util.net.openssl.ciphers.MessageDigest;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
+
+import org.springframework.boot.autoconfigure.security.servlet.UserDetailsServiceAutoConfiguration;
 import org.springframework.stereotype.Service;
+
+import javax.crypto.*;
+import javax.crypto.spec.IvParameterSpec;
+import javax.crypto.spec.SecretKeySpec;
+import java.math.BigDecimal;
+import java.security.InvalidAlgorithmParameterException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 import java.util.*;
 
 
 @Service
 public class UserService
 {
-    @Autowired
-    private PasswordEncoder passwordEncoder;
     @Autowired
     private UserRepository userRepository;
 
@@ -29,31 +39,62 @@ public class UserService
         return userOptional.get();
     }
 
-    public Users createNewUser(Users user) throws Exception {
-//        user.setUserPassword(passwordEncoder.encode(user.getUserPassword()));
-        String pwd= user.getUserPassword();
-        String encryptedPwd = passwordEncoder.encode(pwd);
-        user.setUserPassword(encryptedPwd);
-        boolean optional= userRepository.existsByUserEmail(user.getUserEmail());
 
+
+    public static String encodeToBase64(String message) {
+        return Base64.getEncoder().encodeToString(message.getBytes());
+    }
+
+    public Users createNewUser(Users user) throws Exception {
+        user.setRoles(Roles.USER);
+        String pwd=user.getUserPassword();
+        String encodedPwd=encodeToBase64(pwd);
+        user.setUserPassword(encodedPwd);
+        boolean optional= userRepository.existsByUserEmail(user.getUserEmail());
         if(optional){
             throw new CustomException("Email ID already exists !");
         }
         return userRepository.save(user);
     }
-//    public Users loginUser(Users user) throws Exception {
-//
-//        Optional<Users> usersOptional = userRepository.findByUserEmail(user.getUserEmail());
-//        Integer secretKey= 123455;
-//        String password = usersOptional.get().getUserPassword();
-//        String plainText = decrypt(password,secretKey);
-//        if(!plainText.equals(user.getUserPassword())){
-//            throw new CustomException("User not Found");
-//        }
-//        return user;
-//    }
 
-    public Users updateUser(Users user, Long userId) throws CustomException{
+    public Users createNewAdmin(Users user) throws Exception {
+        user.setRoles(Roles.ADMIN);
+        String pwd=user.getUserPassword();
+        String encodedPwd=encodeToBase64(pwd);
+        user.setUserPassword(encodedPwd);
+        boolean optional= userRepository.existsByUserEmail(user.getUserEmail());
+        if(optional){
+            throw new CustomException("Email ID already exists !");
+        }
+        return userRepository.save(user);
+    }
+
+    public Users loginUser(Users users) throws CustomException {
+        Optional<Users> usersOptional = userRepository.findByUserEmail(users.getUserEmail());
+        String password= users.getUserPassword();
+        String encodedPwd=encodeToBase64(password);
+        if ((usersOptional.get().getUserPassword()).equals(encodedPwd)){
+            return usersOptional.get();
+        }
+        else throw  new CustomException("Password does not match");
+    }
+
+    public Users adminUser(Users users) throws CustomException {
+        Optional<Users> usersOptional = userRepository.findByUserEmail(users.getUserEmail());
+        String password= users.getUserPassword();
+        String encodedPwd=encodeToBase64(password);
+        if (usersOptional.get().getRoles().equals(Roles.ADMIN))
+        {
+            if ((usersOptional.get().getUserPassword()).equals(encodedPwd)) {
+                System.out.println("Password Matched");
+            }
+            return usersOptional.get();
+        }
+        else throw  new CustomException("Password does not match");
+    }
+
+
+    public Users updateUser(Users user) throws CustomException{
         Optional<Users> userOptional = userRepository.findById(user.getUserId());
         if(!userOptional.isPresent()){
             //throw new CustomException();
