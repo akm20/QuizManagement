@@ -5,6 +5,7 @@ import UserQuizManagement.demoUserQuiz.Entity.Users;
 import UserQuizManagement.demoUserQuiz.Service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -14,6 +15,8 @@ import java.util.Map;
 public class UserController {
     @Autowired
     private UserService userService;
+    @Autowired
+    private BCryptPasswordEncoder passwordEncoder;
 
     @GetMapping("/users")
     public List<Users> getAllUser(){
@@ -38,8 +41,9 @@ public class UserController {
     }
 
     @PutMapping("/users/{userId}")
+
     public ResponseEntity<Users> updateUser(@RequestBody Users user ) throws CustomException {
-        Users updatedUser = userService.updateUser(user);
+        Users updatedUser = userService.updateUser(user, user.getUserId());
         return ResponseEntity.ok(updatedUser);
     }
 

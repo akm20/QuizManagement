@@ -2,14 +2,15 @@ package UserQuizManagement.demoUserQuiz.Entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
+
 import javax.persistence.*;
-import java.time.LocalDate;
-import java.util.Date;
+import java.util.*;
 
 @Entity
 @Table
 //        (name = "users", uniqueConstraints = @UniqueConstraint(columnNames = "userEmail"))
-public class Users {
+//
+public class Users{
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Id
     @Column(name = "user_id")
@@ -24,8 +25,11 @@ public class Users {
     private String userPassword;
     @JsonFormat(pattern = "dd/mm/yyyy")
     private Date dob;
-
-    private  Roles roles;
+    private Roles roles;
+//    @ManyToMany(cascade = CascadeType.ALL, fetch=FetchType.EAGER)
+//    @JoinTable(name = "user_role",joinColumns = @JoinColumn(name = "user", referencedColumnName = "id"),
+//            inverseJoinColumns = @JoinColumn(name = "role", referencedColumnName = "id"))
+//    private Set<Roles> roles=new HashSet<>();
     // dob
 //    @OneToMany
 //    private Marks mark;
@@ -34,7 +38,7 @@ public class Users {
     }
 
     public Users(Long userId, String userName, String userPhoneNo, String userEmail,
-                 String userPassword, Date dob,Roles roles) {
+                 String userPassword, Date dob, Roles roles) {
         this.userId = userId;
         this.userName = userName;
         this.userPhoneNo = userPhoneNo;
@@ -111,5 +115,7 @@ public class Users {
                 ", dob='" + dob + '\'' +
                 '}';
     }
+
+
 }
 

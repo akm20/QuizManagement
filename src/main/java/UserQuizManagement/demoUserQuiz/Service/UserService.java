@@ -3,27 +3,18 @@ package UserQuizManagement.demoUserQuiz.Service;
 import UserQuizManagement.demoUserQuiz.CustomException;
 import UserQuizManagement.demoUserQuiz.Entity.Users;
 import UserQuizManagement.demoUserQuiz.Repository.UserRepository;
-import ch.qos.logback.core.util.COWArrayList;
-import org.apache.tomcat.util.buf.CharChunk;
 import org.springframework.beans.factory.annotation.Autowired;
-
-import org.springframework.boot.autoconfigure.security.servlet.UserDetailsServiceAutoConfiguration;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
-import javax.crypto.*;
-import javax.crypto.spec.IvParameterSpec;
-import javax.crypto.spec.SecretKeySpec;
-import java.math.BigDecimal;
-import java.security.InvalidAlgorithmParameterException;
-import java.security.InvalidKeyException;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.util.*;
 
 
 @Service
 public class UserService
 {
+    @Autowired
+    private PasswordEncoder passwordEncoder;
     @Autowired
     private UserRepository userRepository;
 
@@ -37,9 +28,14 @@ public class UserService
         }
         return userOptional.get();
     }
-    
+
     public Users createNewUser(Users user) throws Exception {
+//        user.setUserPassword(passwordEncoder.encode(user.getUserPassword()));
+        String pwd= user.getUserPassword();
+        String encryptedPwd = passwordEncoder.encode(pwd);
+        user.setUserPassword(encryptedPwd);
         boolean optional= userRepository.existsByUserEmail(user.getUserEmail());
+
         if(optional){
             throw new CustomException("Email ID already exists !");
         }
@@ -57,7 +53,7 @@ public class UserService
 //        return user;
 //    }
 
-    public Users updateUser(Users user) throws CustomException{
+    public Users updateUser(Users user, Long userId) throws CustomException{
         Optional<Users> userOptional = userRepository.findById(user.getUserId());
         if(!userOptional.isPresent()){
             //throw new CustomException();
